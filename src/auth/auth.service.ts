@@ -1,10 +1,10 @@
-import { HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
-import { getUserObject } from 'src/helpers/getUserObject';
-import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/schemas/user.schema';
-import { throwErrorStatus } from 'src/helpers/throwErrorStatus';
+import { HttpStatus, Injectable } from "@nestjs/common";
+import { UsersService } from "../users/users.service";
+import * as bcrypt from "bcrypt";
+import { getUserObject } from "src/helpers/getUserObject";
+import { JwtService } from "@nestjs/jwt";
+import { User } from "src/schemas/user.schema";
+import { throwErrorStatus } from "src/helpers/throwErrorStatus";
 
 @Injectable()
 export class AuthService {
@@ -13,20 +13,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(
-    email: string,
-    password: string,
-  ): Promise<{ access_token: string; user: Partial<User> }> {
+  async signIn(email: string, password: string): Promise<{ access_token: string; user: Partial<User> }> {
     try {
       const user = await this.usersService.getUserByEmail(email);
 
       if (!user) {
-        return throwErrorStatus('User not found', HttpStatus.NOT_FOUND);
+        return throwErrorStatus("User not found", HttpStatus.NOT_FOUND);
       }
 
       const isPasswordMatching = await bcrypt.compare(password, user.password);
       if (!isPasswordMatching) {
-        throw new UnauthorizedException();
+        return throwErrorStatus("User not found", HttpStatus.NOT_FOUND);
       }
 
       const access_token = this.jwtService.sign(
@@ -45,7 +42,11 @@ export class AuthService {
       };
     } catch (error) {
       console.log(error);
-      throwErrorStatus(error?.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      const invalidPasswordOrNotFound = error.status === 404;
+      throwErrorStatus(
+        error?.message,
+        invalidPasswordOrNotFound ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

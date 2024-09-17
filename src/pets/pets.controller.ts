@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateCatDto } from './dto/pet.dto';
-import { PetsService } from './pets.service';
-import { Pet } from 'src/schemas/pet.schema';
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { CreateCatDto } from "./dto/pet.dto";
+import { PetsService } from "./pets.service";
+import { Pet } from "src/schemas/pet.schema";
 
-@Controller('pets')
+@Controller("pets")
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
   @Get()
@@ -11,8 +11,8 @@ export class PetsController {
     return this.petsService.getAll();
   }
 
-  @Get(':id')
-  async getCatById(@Param('id') id: string): Promise<Pet> {
+  @Get(":id")
+  async getCatById(@Param("id") id: string): Promise<Pet> {
     return this.petsService.getById(id);
   }
   @Post()

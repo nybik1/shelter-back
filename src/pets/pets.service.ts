@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateCatDto } from './dto/pet.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Pet } from 'src/schemas/pet.schema';
-import { Model } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { CreateCatDto } from "./dto/pet.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Pet } from "src/schemas/pet.schema";
+import { Model } from "mongoose";
 
 @Injectable()
 export class PetsService {
@@ -17,7 +17,7 @@ export class PetsService {
     if (cat) {
       return cat;
     } else {
-      throw new HttpException('Cat not found', HttpStatus.NOT_FOUND);
+      throw new HttpException("Cat not found", HttpStatus.NOT_FOUND);
     }
   }
   async create(catDto: CreateCatDto) {

@@ -26,6 +26,7 @@ export class UsersService {
     try {
       const hashedPassword = await bcrypt.hash(user.password, this.saltsRounds);
       const newUser = new this.userModel({ ...user, password: hashedPassword });
+
       await newUser.save();
     } catch (error) {
       console.log(error);
